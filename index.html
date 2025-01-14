@@ -4,11 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Audio App</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        button, select, input {
+            margin: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>Audio Input to Output</h1>
+    <select id="inputDevice"></select>
+    <select id="outputDevice"></select>
+    <input type="range" id="pitch" min="0.5" max="2" step="0.01" value="1">
+    <label for="pitch">Pitch</label>
     <button id="start">Start</button>
     <button id="stop">Stop</button>
+    <textarea id="ttsInput" rows="4" cols="50" placeholder="Enter text for TTS"></textarea>
+    <select id="language">
+        <option value="en-US">English (US)</option>
+        <option value="es-ES">Spanish</option>
+        <option value="fr-FR">French</option>
+        <!-- Add more languages as needed -->
+    </select>
+    <button id="speak">Speak</button>
     <script src="app.js"></script>
 </body>
 </html>
