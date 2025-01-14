@@ -4,6 +4,7 @@ let output;
 let stream;
 let pitchShifter;
 let audioElement = new Audio();
+let fileAudioElement = new Audio();
 
 document.getElementById('start').addEventListener('click', async () => {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -16,6 +17,7 @@ document.getElementById('start').addEventListener('click', async () => {
     output = audioContext.createMediaStreamDestination();
     pitchShifter.connect(output);
     audioElement.srcObject = output.stream;
+    audioElement.volume = document.getElementById('volume').value;
     audioElement.play();
 });
 
@@ -31,12 +33,32 @@ document.getElementById('pitch').addEventListener('input', () => {
     }
 });
 
+document.getElementById('volume').addEventListener('input', () => {
+    audioElement.volume = document.getElementById('volume').value;
+});
+
 document.getElementById('speak').addEventListener('click', () => {
     const text = document.getElementById('ttsInput').value;
     const language = document.getElementById('language').value;
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = language;
+    utterance.volume = document.getElementById('volume').value;
     speechSynthesis.speak(utterance);
+});
+
+document.getElementById('audioFile').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            fileAudioElement.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+document.getElementById('playFile').addEventListener('click', () => {
+    fileAudioElement.play();
 });
 
 async function getAudioDevices() {
