@@ -7,24 +7,32 @@ let audioElement = new Audio();
 let fileAudioElement = new Audio();
 
 document.getElementById('start').addEventListener('click', async () => {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const inputDeviceId = document.getElementById('inputDevice').value;
-    stream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: inputDeviceId } });
-    input = audioContext.createMediaStreamSource(stream);
-    pitchShifter = audioContext.createGain();
-    pitchShifter.gain.value = document.getElementById('pitch').value;
-    input.connect(pitchShifter);
-    output = audioContext.createMediaStreamDestination();
-    pitchShifter.connect(output);
-    audioElement.srcObject = output.stream;
-    audioElement.volume = document.getElementById('volume').value;
-    audioElement.play();
+    try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const inputDeviceId = document.getElementById('inputDevice').value;
+        stream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: inputDeviceId } });
+        input = audioContext.createMediaStreamSource(stream);
+        pitchShifter = audioContext.createGain();
+        pitchShifter.gain.value = document.getElementById('pitch').value;
+        input.connect(pitchShifter);
+        output = audioContext.createMediaStreamDestination();
+        pitchShifter.connect(output);
+        audioElement.srcObject = output.stream;
+        audioElement.volume = document.getElementById('volume').value;
+        audioElement.play();
+    } catch (error) {
+        console.error('Error starting audio:', error);
+    }
 });
 
 document.getElementById('stop').addEventListener('click', () => {
-    stream.getTracks().forEach(track => track.stop());
-    audioContext.close();
-    audioElement.pause();
+    try {
+        stream.getTracks().forEach(track => track.stop());
+        audioContext.close();
+        audioElement.pause();
+    } catch (error) {
+        console.error('Error stopping audio:', error);
+    }
 });
 
 document.getElementById('pitch').addEventListener('input', () => {
@@ -62,22 +70,26 @@ document.getElementById('playFile').addEventListener('click', () => {
 });
 
 async function getAudioDevices() {
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    const inputSelect = document.getElementById('inputDevice');
-    const outputSelect = document.getElementById('outputDevice');
-    devices.forEach(device => {
-        if (device.kind === 'audioinput') {
-            const option = document.createElement('option');
-            option.value = device.deviceId;
-            option.text = device.label || `Input ${inputSelect.length + 1}`;
-            inputSelect.appendChild(option);
-        } else if (device.kind === 'audiooutput') {
-            const option = document.createElement('option');
-            option.value = device.deviceId;
-            option.text = device.label || `Output ${outputSelect.length + 1}`;
-            outputSelect.appendChild(option);
-        }
-    });
+    try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const inputSelect = document.getElementById('inputDevice');
+        const outputSelect = document.getElementById('outputDevice');
+        devices.forEach(device => {
+            if (device.kind === 'audioinput') {
+                const option = document.createElement('option');
+                option.value = device.deviceId;
+                option.text = device.label || `Input ${inputSelect.length + 1}`;
+                inputSelect.appendChild(option);
+            } else if (device.kind === 'audiooutput') {
+                const option = document.createElement('option');
+                option.value = device.deviceId;
+                option.text = device.label || `Output ${outputSelect.length + 1}`;
+                outputSelect.appendChild(option);
+            }
+        });
+    } catch (error) {
+        console.error('Error getting audio devices:', error);
+    }
 }
 
 getAudioDevices();
