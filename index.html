@@ -3,41 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio App</title>
+    <title>Cookie Consent</title>
     <style>
         body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
             font-family: Arial, sans-serif;
         }
-        button, select, input, textarea {
-            margin: 10px;
+        .cookie-consent {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            overflow: auto;
+        }
+        .cookie-consent-content {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            text-align: center;
+        }
+        .cookie-consent-content h2 {
+            margin-top: 0;
+        }
+        .cookie-consent-content p {
+            text-align: left;
+        }
+        .cookie-consent-content button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <h1>Audio Input to Output</h1>
-    <select id="inputDevice"></select>
-    <select id="outputDevice"></select>
-    <input type="range" id="pitch" min="0.5" max="2" step="0.01" value="1">
-    <label for="pitch">Pitch</label>
-    <input type="range" id="volume" min="0" max="1" step="0.01" value="1">
-    <label for="volume">Volume</label>
-    <button id="start">Start</button>
-    <button id="stop">Stop</button>
-    <textarea id="ttsInput" rows="4" cols="50" placeholder="Enter text for TTS"></textarea>
-    <select id="language">
-        <option value="en-US">English (US)</option>
-        <option value="es-ES">Spanish</option>
-        <option value="fr-FR">French</option>
-        <!-- Add more languages as needed -->
-    </select>
-    <button id="speak">Speak</button>
-    <input type="file" id="audioFile" accept="audio/*">
-    <button id="playFile">Play File</button>
-    <script src="app.js"></script>
+    <div class="cookie-consent" id="cookieConsent">
+        <div class="cookie-consent-content">
+            <h2>Cookies Consent</h2>
+            <p>This website uses cookies to ensure you get the best experience on our site. By continuing to use this website, you consent to the use of cookies in accordance with our Cookies Policy.</p>
+            <p>Cookies are small text files that are placed on your device by websites that you visit. They are widely used to make websites work, or work more efficiently, as well as to provide information to the owners of the site.</p>
+            <p>We use cookies to enhance your browsing experience, provide personalized content, and analyze our traffic. We also share information about your use of our site with our social media, advertising, and analytics partners who may combine it with other information that you’ve provided to them or that they’ve collected from your use of their services.</p>
+            <p>By using our website, you consent to our use of cookies and other tracking technologies as described in this Cookies Policy. You also consent to our collection, use, and sharing of your data, including for the purposes of selling and using it for any purpose we deem necessary.</p>
+            <button onclick="acceptCookies()">Accept</button>
+        </div>
+    </div>
+    <script>
+        function acceptCookies() {
+            document.getElementById('cookieConsent').style.display = 'none';
+            // Set a cookie to remember the user's consent
+            document.cookie = "cookiesAccepted=true; max-age=31536000; path=/";
+        }
+
+        // Check if the user has already accepted cookies
+        function checkCookie() {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.indexOf('cookiesAccepted=') == 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Show the cookie consent popup if the user hasn't accepted cookies
+        if (!checkCookie()) {
+            document.getElementById('cookieConsent').style.display = 'flex';
+        }
+    </script>
 </body>
 </html>
